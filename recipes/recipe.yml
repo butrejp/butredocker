@@ -1,9 +1,8 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 name: butredocker
 description: My optimized Fedora CoreOS image for running Docker and Fluxer on a Wyse 3040.
-
-base-image: quay.io/fedora/fedora-coreos
-image-version: 44
+base-image: ghcr.io/ublue-os/ucore-minimal
+image-version: lts
 
 modules:
   - type: files
@@ -14,28 +13,30 @@ modules:
   - type: dnf
     repos:
       files:
-        - https://download.docker.com/linux/fedora/docker-ce.repo
         - https://pkg.cloudflare.com/cloudflared.repo
     install:
       packages:
-        - docker-ce
-        - docker-ce-cli
-        - containerd.io
-        - docker-buildx-plugin
-        - docker-compose-plugin
         - cloudflared
         - git
-        - zram-generator
+        - tailscale
     remove:
       packages:
-        - podman
-        - podman-docker
-        - skopeo
-  
+        - cockpit
+        - cockpit-bridge
+        - cockpit-ostree
+        - cockpit-podman
+        - cockpit-system
+        - qemu-guest-agent
+        - open-vm-tools
+        - podman-compose
+        - zfs
+        - pv
+
   - type: systemd
     system:
       enabled:
         - docker
         - cloudflared
+        - tailscaled
 
   - type: signing
