@@ -1,18 +1,16 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 name: butredocker
-description: My optimized Fedora CoreOS appliance image for running Docker and Fluxer on a Wyse 3040.
+description: My optimized Fedora CoreOS image for running Docker and Fluxer on a Wyse 3040.
 
 base-image: quay.io/fedora/fedora-coreos
 image-version: 44
 
 modules:
-  # 1. Inject local configuration overlays
   - type: files
     files:
       - source: system
         destination: /
 
-  # 2. Package Management: Repositories and System Packages
   - type: dnf
     repos:
       files:
@@ -24,20 +22,18 @@ modules:
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
-      - cloudflared           # Natively layered for reliable tunneling
-      - git                  # Essential for grabbing Fluxer git stacks
-      - zram-generator       # Memory optimization helper
+      - cloudflared
+      - git
+      - zram-generator
     remove:
-      - podman               # Clean out Podman to maximize SSD space
+      - podman
       - podman-docker
       - skopeo
-
-  # 3. Systemd Boot Sequence Enablement
+  
   - type: systemd
     system:
       enabled:
         - docker
         - cloudflared
 
-  # 4. Mandatory Cryptographic Image Signing
   - type: signing
