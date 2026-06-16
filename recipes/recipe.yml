@@ -17,18 +17,20 @@ modules:
         - https://download.docker.com/linux/fedora/docker-ce.repo
         - https://pkg.cloudflare.com/cloudflared.repo
     install:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin
-      - cloudflared
-      - git
-      - zram-generator
+      packages:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin
+        - cloudflared
+        - git
+        - zram-generator
     remove:
-      - podman
-      - podman-docker
-      - skopeo
+      packages:
+        - podman
+        - podman-docker
+        - skopeo
   
   - type: systemd
     system:
