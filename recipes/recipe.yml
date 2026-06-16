@@ -1,37 +1,43 @@
----
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-# image will be published to ghcr.io/<user>/<name>
 name: butredocker
-# description will be included in the image's metadata
-description: This is my personal OS image.
+description: My optimized Fedora CoreOS appliance image for running Docker and Fluxer on a Wyse 3040.
 
-# the base image to build on top of (FROM) and the version tag to use
 base-image: quay.io/fedora/fedora-coreos
-image-version: 44 # latest is also supported if you want new updates ASAP
+image-version: 44
 
-# module configuration, executed in order
-# you can include multiple instances of the same module
 modules:
-   - type: files
+  # 1. Inject local configuration overlays
+  - type: files
     files:
       - source: system
-        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
-   - type: dnf
-     repos:
-       files:
-       - https://download.docker.com/linux/fedora/docker-ce.repo
-     install:
-       packages:
-         - docker-ce 
-         - docker-ce-cli
-         - containerd.io
-         - docker-buildx-plugin
-         - docker-compose-plugin
+        destination: /
 
-   - type: systemd
-     system:
-       enabled:
-         - docker
+  # 2. Package Management: Repositories and System Packages
+  - type: dnf
+    repos:
+      files:
+        - https://download.docker.com/linux/fedora/docker-ce.repo
+        - https://pkg.cloudflare.com/cloudflared.repo
+    install:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+      - cloudflared           # Natively layered for reliable tunneling
+      - git                  # Essential for grabbing Fluxer git stacks
+      - zram-generator       # Memory optimization helper
+    remove:
+      - podman               # Clean out Podman to maximize SSD space
+      - podman-docker
+      - skopeo
 
+  # 3. Systemd Boot Sequence Enablement
+  - type: systemd
+    system:
+      enabled:
+        - docker
+        - cloudflared
 
-  - type: signing # this sets up the proper policy & signing files for signed images to work fully
+  # 4. Mandatory Cryptographic Image Signing
+  - type: signing
