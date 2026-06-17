@@ -32,7 +32,6 @@ modules:
     system:
       enabled:
         - docker
-        - cloudflared
         - tailscaled
 
   - type: signing
