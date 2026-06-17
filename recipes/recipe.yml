@@ -11,12 +11,8 @@ modules:
         destination: /
 
   - type: dnf
-    repos:
-      files:
-        - https://pkg.cloudflare.com/cloudflared.repo
     install:
       packages:
-        - cloudflared
         - git
         - tailscale
     remove:
