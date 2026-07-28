@@ -15,18 +15,6 @@ modules:
       packages:
         - git
         - tailscale
-    remove:
-      packages:
-        - cockpit
-        - cockpit-bridge
-        - cockpit-ostree
-        - cockpit-podman
-        - cockpit-system
-        - qemu-guest-agent
-        - open-vm-tools
-        - podman-compose
-        - zfs
-        - pv
 
   - type: systemd
     system:
